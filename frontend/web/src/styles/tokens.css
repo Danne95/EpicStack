@@ -1,0 +1,24 @@
+:root {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --surface-primary: #f1eee5;
+  --surface-secondary: #faf8f1;
+  --brick-normal: #e5e3d8;
+  --brick-selected: #a7462c;
+  --brick-valid: #456044;
+  --brick-warning: #865c22;
+  --text-primary: #292d25;
+  --text-muted: #64675d;
+  --accent-primary: #a7462c;
+  --divider: #d2d1c4;
+  --radius-brick: 8px;
+  --radius-button: 12px 4px 12px 4px;
+  --brick-edge: #c4c7b7;
+  --clay-edge: #81341f;
+  --brick-bevel: inset 0 2px 0 #ffffff60;
+  --radius-panel: 12px;
+  color: var(--text-primary);
+  background: var(--surface-primary);
+}

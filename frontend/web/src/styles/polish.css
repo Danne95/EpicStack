@@ -1,0 +1,177 @@
+:root {
+  --motion-brick: 240ms;
+  --motion-victory: 600ms;
+  --motion-thinking: 900ms;
+}
+.tower li {
+  animation: brick-arrive var(--motion-brick) ease-out;
+}
+.brick {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+.drawn-brick.has-value {
+  animation: brick-arrive var(--motion-brick) ease-out;
+}
+.result-mark {
+  animation: seal-arrive var(--motion-victory) ease-out;
+}
+.winner .brick {
+  animation: ordered-glow var(--motion-victory) ease-out;
+}
+.thinking .drawn-brick {
+  animation: thinking-glow var(--motion-thinking) ease-in-out infinite alternate;
+}
+.thinking > .eyebrow::after {
+  content: ' · · ·';
+}
+@keyframes brick-arrive {
+  from {
+    opacity: 0.45;
+    transform: translateY(-7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes seal-arrive {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+@keyframes ordered-glow {
+  from {
+    box-shadow: inset 0 0 0 2px var(--brick-valid);
+  }
+  to {
+    box-shadow: var(--brick-bevel);
+  }
+}
+@keyframes thinking-glow {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.game-controls {
+  margin-top: 24px;
+  border-top: 1px solid var(--divider);
+  padding-top: 20px;
+}
+.control-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.control-buttons .button {
+  padding: 10px 18px;
+  font-size: 12px;
+}
+.control-buttons .button:last-child {
+  margin-left: auto;
+}
+.restart-prompt {
+  padding: 20px;
+  margin-top: 16px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-panel);
+}
+.restart-prompt .button {
+  margin: 0 12px 8px 0;
+}
+.sound-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 0;
+  border-block: 1px solid var(--divider);
+  margin: 32px 0;
+}
+.sound-setting p {
+  margin: 0;
+  font-size: 13px;
+}
+.sound-setting button {
+  flex-shrink: 0;
+}
+.statistics-panel {
+  margin: 40px 0;
+}
+.statistics-panel > p {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.statistics-card {
+  padding: 20px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-panel);
+}
+.statistics-card h3 {
+  margin: 0 0 18px;
+}
+.statistics-card dl {
+  margin: 0;
+  font-size: 13px;
+}
+.statistics-card dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+}
+.statistics-card dt {
+  color: var(--text-muted);
+}
+.statistics-card dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.storage-notice {
+  padding: 12px 0;
+  color: var(--brick-warning);
+  font-size: 13px;
+}
+@media (max-width: 480px) {
+  .statistics-grid {
+    grid-template-columns: 1fr;
+  }
+  .sound-setting {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .control-buttons {
+    gap: 8px;
+  }
+  .control-buttons .button {
+    padding-inline: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tower li,
+  .brick,
+  .drawn-brick.has-value,
+  .result-mark,
+  .winner .brick,
+  .thinking .drawn-brick {
+    animation: none;
+    transition: none;
+  }
+}

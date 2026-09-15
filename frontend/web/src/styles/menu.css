@@ -1,0 +1,214 @@
+.menu-screen {
+  min-height: calc(100vh - 180px);
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 64px;
+  padding: 60px 0 76px;
+}
+.menu-copy h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(72px, 7.7vw, 108px);
+  font-weight: 400;
+  letter-spacing: -0.065em;
+  margin-bottom: 28px;
+}
+.menu-copy h1 em {
+  color: var(--accent-primary);
+  font-weight: 400;
+}
+.menu-intro {
+  color: var(--text-muted);
+  font-size: 18px;
+  line-height: 1.65;
+  margin-bottom: 36px;
+}
+.difficulty-picker {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.difficulty-picker legend {
+  font-size: 12px;
+  font-weight: 650;
+  margin-bottom: 14px;
+}
+.difficulty-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.difficulty-option {
+  padding: 12px 6px;
+  border: 1px solid var(--divider);
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  min-height: 46px;
+  position: relative;
+}
+.difficulty-option input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.difficulty-option:has(input:focus-visible) {
+  outline: 3px solid var(--text-primary);
+  outline-offset: 3px;
+}
+.difficulty-option strong {
+  font-weight: 600;
+  font-size: 12px;
+}
+.difficulty-option span {
+  display: none;
+}
+.difficulty-option.chosen {
+  background: var(--text-primary);
+  color: var(--surface-secondary);
+  border-color: var(--text-primary);
+}
+.menu-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+.resume-note {
+  padding: 16px 0;
+  color: var(--brick-valid);
+}
+.menu-art {
+  background: #e5e4d8 url('../../../../assets/backgrounds/board-grid.svg');
+  border: 1px solid #ddded1;
+  border-radius: 180px 180px 12px 12px;
+  padding: 56px 38px 24px;
+  position: relative;
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.art-caption {
+  display: grid;
+  text-align: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 9px;
+  letter-spacing: 0.17em;
+}
+.display-stack {
+  padding: 30px 0;
+}
+.display-brick {
+  background: #f8f6ed;
+  border: 1px solid #cacbbc;
+  border-bottom-width: 5px;
+  border-radius: 7px;
+  margin: 8px auto 0;
+  width: var(--display-width);
+  height: 56px;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow:
+    var(--brick-bevel),
+    0 8px 14px #292d2510;
+}
+.display-brick span {
+  font-size: 6px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+.display-brick strong {
+  font-weight: 600;
+  font-size: 29px;
+  font-variant-numeric: tabular-nums;
+}
+.display-brick .icon {
+  width: 14px;
+  height: 14px;
+}
+.display-brick-0 {
+  transform: rotate(-4deg);
+}
+.display-brick-1 {
+  transform: rotate(2deg);
+}
+.display-brick-2 {
+  background: var(--accent-primary);
+  color: var(--surface-secondary);
+  border-color: #873721;
+  transform: rotate(-2deg) translateX(-8px);
+}
+.display-brick-2 span {
+  color: var(--surface-secondary);
+}
+.display-brick-3 {
+  transform: translateX(6px);
+}
+.display-brick-4 {
+  transform: rotate(2deg) translateX(-6px);
+}
+.art-footnote {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+}
+.reading-screen .difficulty-option {
+  padding: 22px 10px;
+}
+.reading-screen .difficulty-option span {
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+@media (max-width: 1000px) {
+  .menu-screen {
+    gap: 36px;
+  }
+  .menu-art {
+    padding: 45px 26px 24px;
+    min-height: 500px;
+  }
+}
+@media (max-width: 700px) {
+  .menu-screen {
+    grid-template-columns: 1fr;
+    padding: 44px 0;
+    gap: 40px;
+  }
+  .menu-copy h1 {
+    font-size: 80px;
+  }
+  .menu-art {
+    min-height: 440px;
+    max-width: 440px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 24px 24px;
+  }
+  .display-brick {
+    height: 44px;
+  }
+  .menu-actions {
+    gap: 16px;
+  }
+  .menu-actions .primary {
+    flex: 1;
+  }
+}
+@media (max-width: 380px) {
+  .reading-screen .difficulty-options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
