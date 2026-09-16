@@ -130,15 +130,22 @@ passed; the live site reloaded offline and completed a human/computer turn witho
 
 ## Stage 8 — Android (in progress; iPhone deferred)
 
-- Use a private EpicStack-Mobile repository for the Android shell.
-- Reuse the existing React interface inside Capacitor; bundle the game for first-launch offline play.
-- Pin the public EpicStack repository as a Git submodule, including interface, engine, AI, and assets.
-- Keep only Android integration, packaging, and build instructions in the private repository.
-- Disable the web service worker in Android builds; app updates replace bundled assets.
-- Produce a debug APK and verify gameplay, settings/statistics persistence, sound, and offline launch on Android.
+- [x] Use a private EpicStack-Mobile repository for the Android shell.
+- [x] Reuse the existing React interface inside Capacitor; bundle the game for first-launch offline play.
+- [x] Pin the public EpicStack repository as a Git submodule, including interface, engine, AI, and assets.
+- [x] Keep only Android integration, packaging, and build instructions in the private repository.
+- [x] Disable the web service worker in Android builds; app updates replace bundled assets.
+- [x] Produce the initial debug APK.
+- [ ] Verify gameplay, settings/statistics persistence, sound, system bars, back navigation, and offline launch on Android.
 - Preserve identical engine/AI decisions by using the same shared implementation.
 - Keep signing keys outside Git. Store publication and release signing need separate setup.
 - Do not add an iOS project or iPhone build dependencies; reconsider that platform later.
+
+Android foundation completed on 2026-09-16 in the private EpicStack-Mobile repository.
+Capacitor 8.5.2 packages public game commit acaf6d4. The shared project passed one quality
+check (134 existing tests) and both web/Android builds. Gradle assembleDebug succeeded with
+JDK 21 and SDK 36. No device or emulator was available; Stage 8 remains in progress pending
+Android runtime verification and later release-signing decisions.
 
 ## Stage 9 — PvP architecture
 
