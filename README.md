@@ -4,11 +4,11 @@ A turn-based number-ordering game: build a tower of ten bricks in ascending orde
 smallest at the top, before your opponent does.
 
 The initial target is a polished PvE web game hosted on GitHub Pages, playable offline
-once loaded, without a backend. Android, iPhone, and optional private PvP are later stages.
+once loaded, without a backend. Android development is Stage 8; iPhone is deferred and private PvP comes later.
 
 The web client, shared rules/AI, and common assets stay in this public repository. Stage 8
-will add a separate private EpicStack-Mobile repository for Android and iPhone, consuming
-versioned shared dependencies. See the [future directory plan](docs/ARCHITECTURE.md#future-clients-and-repository-visibility).
+uses a separate private EpicStack-Mobile repository for Android, with the existing interface
+and a pinned public game dependency. iPhone is deferred. See the [future directory plan](docs/ARCHITECTURE.md#future-clients-and-repository-visibility).
 
 ## Current status
 
@@ -28,8 +28,8 @@ Preferences and completed-game statistics are saved in this browser. Active matc
 in memory while navigating but reset on refresh. Settings shows records for each difficulty.
 Restart restores the opening towers; New game deals fresh towers. Sound can be muted,
 and decorative animations respect reduced motion.
-Stage 7 is prepared locally: Pages deployment and offline caching are implemented and verified.
-The public repository exists; source upload and live deployment remain pending. See [release instructions](docs/RELEASE.md).
+Stage 7 is complete: [play EpicStack](https://danne95.github.io/EpicStack/).
+Stage 8 Android development is in progress. See [release instructions](docs/RELEASE.md).
 
 ## Development
 
@@ -69,7 +69,7 @@ If the PowerShell npm launcher fails on Windows, use `npm.cmd` in the commands a
 | `backend/`            | Empty placeholders until the PvP stage                       |
 | `docs/`               | Canonical rules, architecture, AI, style, decisions, roadmap |
 
-Android and iPhone clients will live in the separate private `EpicStack-Mobile` repository in Stage 8. Root tooling serves one project; no
+The Android client will live in the separate private `EpicStack-Mobile` repository in Stage 8. Root tooling serves one project; no
 workspace framework or package publishing is needed. Shared production code is type-checked
 separately without DOM or Node globals.
 

@@ -3,7 +3,12 @@ import { useEffect, useState } from 'react';
 export function OfflineStatus() {
   const [message, setMessage] = useState('');
   useEffect(() => {
-    if (!import.meta.env.PROD || !('serviceWorker' in navigator)) return;
+    if (
+      import.meta.env.MODE === 'android' ||
+      !import.meta.env.PROD ||
+      !('serviceWorker' in navigator)
+    )
+      return;
     let disposed = false;
     const announce = (text: string): void => {
       if (!disposed) setMessage(text);

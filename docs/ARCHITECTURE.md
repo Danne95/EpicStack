@@ -149,73 +149,45 @@ Game randomness is supplied through explicit inputs. Shared modules must not acc
 storage, timers, network, rendering, or global mutable state. Persistence, audio, and timing
 belong to the platform layer when their stages arrive.
 
-## Future clients and repository visibility
+## Clients and repository visibility
 
-Plan confirmed on 2026-09-15: use two repositories. Public `EpicStack` owns the web client,
-canonical shared TypeScript logic, and common assets. Private `EpicStack-Mobile` owns
-the Android and iPhone presentation and platform integration. Repository visibility applies
-to the whole repository; mobile code must not be placed in the public repository.
-
-This is the intended future layout, not a request to create mobile scaffolding during Stage 7:
+Updated 2026-09-16: EpicStack stays public. EpicStack-Mobile is a separate private repository
+for Android. iPhone is deferred; no iOS project or dependencies are created.
 
 ```text
-EpicStack/                          PUBLIC repository
-├── frontend/
-│   └── web/
-│       ├── src/
-│       └── tests/
-├── shared/
-│   ├── game/                      Canonical game rules and state
-│   ├── ai/                        Canonical computer AI
-│   └── types/
-├── assets/                        Common graphics, sounds, fonts
-├── docs/
-├── .github/workflows/              Web builds and deployment
-└── package.json
+EpicStack/                         PUBLIC
+├── frontend/web/                  Canonical React interface
+├── shared/game/                   Canonical rules and state
+├── shared/ai/                     Canonical AI
+├── shared/types/
+├── assets/                        Canonical common assets
+└── docs/
 
-EpicStack-Mobile/                   PRIVATE repository (Stage 8)
-├── src/                           Shared mobile presentation
-│   ├── components/
-│   ├── screens/
-│   └── hooks/
-├── android/                       Android-specific integration
-├── ios/                           iPhone-specific integration
-├── assets/                        Mobile-only assets
-├── tests/
-├── docs/
-├── .github/workflows/              Mobile builds
-└── package.json                   Pins shared package versions
+EpicStack-Mobile/                  PRIVATE
+├── game/                          Git submodule pinned to a public EpicStack commit
+├── android/                       Capacitor Android integration
+├── scripts/                       Build helpers
+├── capacitor.config.json
+├── package.json
+└── README.md
 ```
 
-The trees show the relevant client layout; existing tooling and deferred backend scaffolding
-are omitted. Exact mobile folders depend on the framework selected in Stage 8.
+The user chose to reuse the existing interface. Capacitor packages the production web build
+and runs the same TypeScript engine and AI within Android WebView. No separately maintained
+mobile interface or copied rule implementation is needed. The submodule is a pinned upstream
+dependency, not a fork: edit canonical game code in EpicStack, publish it, then deliberately
+advance the mobile submodule and rebuild.
 
-```text
-Public shared/game + shared/ai + shared/types
-                    ├── Web
-                    └── Private shared mobile presentation
-                                  ├── Android
-                                  └── iPhone
+The public build:android command emits the same game without a service worker. Android
+bundles all web assets, so offline play does not require a first online visit and stale web
+caches cannot override an APK update. Capacitor dependencies stay in the private repository.
+No hosted server URL is used by the Android app.
 
-Public common assets ──────────────► All three versions
+Web deployment and Android APK releases remain independent. Local statistics belong to the
+installation and do not sync with the website. Signing keys remain outside Git. The initial
+debug application ID is io.github.danne95.epicstack; review it before any store release.
 
 PvP Client → Authoritative Backend → Shared Game Engine
-```
-
-### Shared updates and releases
-
-- Edit rules, AI, types, and common assets once in the public repository.
-- At Stage 8, package the shared code and common assets as versioned dependencies. Choose
-  the package delivery mechanism then; do not add speculative publishing infrastructure now.
-- Mobile pins explicit versions and upgrades deliberately, with compatibility checks.
-  Do not maintain independent mobile copies of the rules or common assets.
-- Shared source changes reach each platform through its next build/release. Updating the
-  web deployment does not automatically update an installed Android or iPhone application.
-- Mobile-only interface changes and assets remain private. Signing keys and credentials
-  remain outside both repositories.
-- Identical shared versions, state, configuration, and random inputs must produce identical
-  AI decisions across all clients. The mobile runtime must execute the shared TypeScript
-  implementation rather than rewrite it.
 
 PvP is deferred to Stage 9. The backend will validate actions against the same engine and
 own authoritative state. Do not add networking or database dependencies before then.
@@ -263,7 +235,7 @@ state and invoke controller actions; they contain no scoring or victory rules.
 
 Vite uses relative production asset URLs for a GitHub Pages project subpath. Hash navigation
 supports static hosting. The Pages workflow builds and uploads only dist. Public deployment
-and live verification are pending; local production checks have passed.
+and live offline verification passed on 2026-09-15.
 
 Offline play while a loaded session remains open and offline reopening are separate checks.
 offlineBuild.ts emits a worker with a content-derived version and complete release asset list.

@@ -16,7 +16,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test"
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "build:android": "npm run typecheck && vite build --config vite.config.ts --mode android"
   },
   "dependencies": {
     "react": "^19.2.0",

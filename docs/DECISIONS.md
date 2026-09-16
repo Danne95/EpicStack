@@ -179,3 +179,13 @@ assets canonical. Mobile upgrades are explicit and each platform releases indepe
 
 This supersedes the original Stage 8 plan to add frontend/android inside EpicStack.
 Framework selection, package delivery, and mobile scaffolding wait until Stage 8.
+
+## 2026-09-16 — Android first, reuse the existing interface
+
+The user deferred iPhone and chose the existing interface for Android. Use Capacitor in the
+private EpicStack-Mobile repository, with the public game pinned as a Git submodule. This
+supersedes the separate mobile UI and shared-package proposal: the complete existing game
+is reused, so individual shared package publishing is unnecessary at this stage.
+
+Android builds omit the web service worker because assets are bundled with each APK.
+No Android integration or Capacitor dependency is added to the public game repository.

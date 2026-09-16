@@ -114,31 +114,31 @@ Desktop (1264px), tablet (820px), and phone (390px) layouts were reviewed with n
 errors. Reduced-motion CSS disables all new decorative movement. Active matches still reset
 on refresh; deployment and offline reopening remain Stage 7 work.
 
-## Stage 7 — GitHub Pages release (prepared; publication pending)
+## Stage 7 — GitHub Pages release (complete)
 
 - [x] Configure production builds and the GitHub Actions/Pages workflow.
 - [x] Verify local production navigation, repository-subpath assets, refreshes, and responsive layouts.
 - [x] Verify a complete game with the server unavailable after loading.
 - [x] Define and verify caching/update behavior for offline reopening.
-- [ ] Create the GitHub repository, enable Pages, and complete the first hosted deployment.
-- [ ] Verify the live site and offline reopening on the published origin.
+- [x] Create the GitHub repository, enable Pages, and complete the first hosted deployment.
+- [x] Verify the live site and offline reopening on the published origin.
 
 Local release checks passed on 2026-09-15: one full quality-check run (134 tests), production
 build, offline reload and complete game, and waiting-update activation after the client left.
-See RELEASE.md. The public Danne95/EpicStack repository exists; source upload and Pages deployment are pending.
-Do not begin Stage 8 yet.
+Published on 2026-09-15 at https://danne95.github.io/EpicStack/. Hosted checks and deployment
+passed; the live site reloaded offline and completed a human/computer turn without errors.
 
-## Stage 8 — Mobile: Android and iPhone
+## Stage 8 — Android (in progress; iPhone deferred)
 
-- Create a separate private `EpicStack-Mobile` repository for both mobile versions.
-- Choose a mobile framework/runtime that can share presentation code across Android and iOS.
-- Keep platform-specific integration in `android/` and `ios/`; final folders depend on the framework.
-- Consume explicitly versioned shared engine/AI/types and common asset packages from public EpicStack.
-- Maintain rules, AI, and common assets only in the public repository; do not fork or copy-edit them.
-- Ship PvE, difficulty settings, local statistics, and offline play on both platforms.
-- Verify identical AI decisions for identical shared versions, state, configuration, and random inputs.
-- Keep signing keys and credentials outside Git, including the private repository.
-- Choose package delivery and mobile release sequencing during this stage, after Stage 7 is complete.
+- Use a private EpicStack-Mobile repository for the Android shell.
+- Reuse the existing React interface inside Capacitor; bundle the game for first-launch offline play.
+- Pin the public EpicStack repository as a Git submodule, including interface, engine, AI, and assets.
+- Keep only Android integration, packaging, and build instructions in the private repository.
+- Disable the web service worker in Android builds; app updates replace bundled assets.
+- Produce a debug APK and verify gameplay, settings/statistics persistence, sound, and offline launch on Android.
+- Preserve identical engine/AI decisions by using the same shared implementation.
+- Keep signing keys outside Git. Store publication and release signing need separate setup.
+- Do not add an iOS project or iPhone build dependencies; reconsider that platform later.
 
 ## Stage 9 — PvP architecture
 

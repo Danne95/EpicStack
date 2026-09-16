@@ -10,8 +10,9 @@ the github-pages environment. The completed deployment supplies the public site 
 Public repositories support Pages on GitHub Free; private repositories require a supported
 paid plan. See [GitHub’s custom workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
-The public repository is https://github.com/Danne95/EpicStack. Source upload, Pages enablement,
-and live verification are the remaining release steps. Public source publishing was explicitly authorized on 2026-09-15.
+The public repository is https://github.com/Danne95/EpicStack.
+The game is live at https://danne95.github.io/EpicStack/. Deployment succeeded on 2026-09-15.
+The live site reloaded offline and completed a human/computer turn without browser errors.
 
 ## Preview and offline behavior
 
@@ -39,4 +40,4 @@ No game-rule tests were added for release configuration. A production preview at
 verified offline reload, a full offline game, cached assets, and settings after reopening.
 Desktop, tablet (820px), and phone (390px) checks reported no horizontal overflow or browser
 errors. A simulated update waited for the open client, activated when it left, and removed
-the previous version’s cache. Repeat a brief live check after the first GitHub deployment.
+the previous version’s cache. Live verification passed as recorded above.
