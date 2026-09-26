@@ -10,14 +10,16 @@
     "dev": "vite --config vite.config.ts",
     "build": "npm run typecheck && vite build --config vite.config.ts",
     "preview": "vite preview --config vite.config.ts",
-    "typecheck": "tsc --project shared/tsconfig.json && tsc --project frontend/web/tsconfig.json && tsc --project tsconfig.json",
+    "typecheck": "tsc --project shared/tsconfig.json && tsc --project frontend/web/tsconfig.json && tsc --project tsconfig.json && tsc --project backend/tsconfig.json",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
-    "build:android": "npm run typecheck && vite build --config vite.config.ts --mode android"
+    "build:android": "npm run typecheck && vite build --config vite.config.ts --mode android",
+    "backend:build": "tsc --project backend/tsconfig.json && vite build --config backend/vite.config.ts",
+    "backend:start": "npm run backend:build && node dist-backend/server.cjs"
   },
   "dependencies": {
     "react": "^19.2.0",

@@ -1,3 +1,4 @@
+import { PVP_ENABLED } from '../network/pvpApi';
 import type { CSSProperties } from 'react';
 import { Icon } from '../components/Icon';
 import type { Difficulty } from '../../../../shared/ai/difficulty';
@@ -34,6 +35,11 @@ export function MenuScreen({ difficulty, onDifficulty, onPlay, canResume }: Prop
           <button className="button primary" onClick={onPlay}>
             {canResume ? 'Resume game' : 'Play against computer'} <Icon name="arrow" />
           </button>
+          {PVP_ENABLED ? (
+            <a className="button secondary" href="#/multiplayer">
+              Play a friend
+            </a>
+          ) : null}
           <a className="text-link" href="#/how-to-play">
             How to play <Icon name="arrow" />
           </a>

@@ -189,8 +189,8 @@ debug application ID is io.github.danne95.epicstack; review it before any store 
 
 PvP Client → Authoritative Backend → Shared Game Engine
 
-PvP is deferred to Stage 9. The backend will validate actions against the same engine and
-own authoritative state. Do not add networking or database dependencies before then.
+Stage 9 adds a local backend that validates actions against the same engine and owns
+authoritative state. Its HTTP contract is described below; no database dependency is added.
 PvE must work even if all future backend services are unavailable.
 
 ## Stage 6 presentation and persistence
@@ -244,3 +244,32 @@ and caches only known release assets. Cache names include the project scope. Act
 only older caches for that scope. Updates wait until all existing clients close; no skipWaiting
 or forced reload interrupts a match. OfflineStatus registers only in production and reports
 readiness. Failed installation leaves the existing release active. See RELEASE.md for limits.
+
+## Stage 9 — Local authoritative PvP
+
+The optional Node HTTP server in backend/http.ts calls backend/multiplayer/rooms.ts,
+which owns rooms and calls the existing shared engine. It has no UI dependencies.
+The engine never imports backend code. A separate backend TypeScript configuration uses
+Node globals, while shared code remains platform-independent.
+
+HTTP client → authenticated room service → shared engine → canonical game state.
+
+Commands carry the expected revision. The service identifies the player from a private
+token and generates randomness itself. Replacement and ending a non-winning turn are one
+atomic service operation. In-memory storage is intentionally limited to local development;
+see [the API contract](PVP_API.md) and backend/database/README.md for persistence requirements.
+The existing Vite installation bundles the Node entry point into dist-backend/server.cjs.
+The web build and GitHub Pages deployment do not include or start this server.
+
+## Stage 10 — Local multiplayer presentation
+
+The multiplayer screen uses a separate controller and HTTP adapter; it does not share the
+PvE controller or statistics lifecycle. Shared protocol types live in shared/pvp and import
+only domain types. Both client and backend consume that contract without cross-platform
+imports. The controller restores a per-tab credential and polls for authoritative snapshots.
+Generation checks discard responses after moves, room changes, or unmounting; revision
+checks stop older snapshots replacing newer ones. The backend remains the final authority.
+
+Vite's local /api proxy connects development screens to the loopback backend. Production
+builds keep the multiplayer entry disabled until hosting is explicitly configured. There
+are no API requests during PvE. See MULTIPLAYER.md for session and reconnect semantics.

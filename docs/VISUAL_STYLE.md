@@ -91,3 +91,11 @@ all decorative animations and transitions. Numbers, widths, and touch targets st
 Sound uses quiet sine tones synthesized locally: draw 330Hz, placement 196Hz, win
 392/494/587Hz, loss 294/220Hz. Notes last 130ms, spaced 110ms, with an 8ms attack and
 an exponential release from gain 0.06 to 0.001. No remote assets or audio library are needed.
+
+## Stage 10 friend play
+
+The lobby uses two warm-surface cards for creating and joining a room, stacked on narrow
+screens. The match reuses the existing tower layout and value-scaled bricks. A room bar
+shows connection status in text; reconnect disables actions while preserving the last board.
+Invitation inputs have visible labels and selectable links as a clipboard fallback. There
+are no new assets, palettes, animations, or icon styles.

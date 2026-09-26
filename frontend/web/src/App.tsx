@@ -1,3 +1,4 @@
+import { MultiplayerScreen } from './screens/MultiplayerScreen';
 import stackMark from '../../../assets/branding/stack-mark.svg';
 import { OfflineStatus } from './components/OfflineStatus';
 import { useEffect } from 'react';
@@ -91,6 +92,8 @@ export function App() {
           muted={muted}
           onMute={toggleMute}
         />
+      ) : screen === 'multiplayer' ? (
+        <MultiplayerScreen />
       ) : screen === 'settings' ? (
         <SettingsScreen
           difficulty={difficulty}

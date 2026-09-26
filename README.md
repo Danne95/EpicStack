@@ -4,7 +4,7 @@ A turn-based number-ordering game: build a tower of ten bricks in ascending orde
 smallest at the top, before your opponent does.
 
 The initial target is a polished PvE web game hosted on GitHub Pages, playable offline
-once loaded, without a backend. Android development is Stage 8; iPhone is deferred and private PvP comes later.
+once loaded, without a backend. Android device verification is deferred; iPhone is deferred. Stage 9 provides a local PvP API.
 
 The web client, shared rules/AI, and common assets stay in this public repository. Stage 8
 uses a separate private EpicStack-Mobile repository for Android, with the existing interface
@@ -52,7 +52,7 @@ npm run preview   # Serve the production build after building
 Tests include scoring examples, paired difficulty comparisons, complete computer games,
 and 200-turn engine simulations in Node without a UI.
 `npm run build` emits `dist/` using relative asset paths. GitHub Pages
-deployment and offline caching are not implemented yet.
+deployment and offline caching are configured.
 
 If the PowerShell npm launcher fails on Windows, use `npm.cmd` in the commands above.
 
@@ -60,18 +60,26 @@ If the PowerShell npm launcher fails on Windows, use `npm.cmd` in the commands a
 
 | Path                  | Responsibility                                               |
 | --------------------- | ------------------------------------------------------------ |
-| `frontend/web/src/`   | Future React presentation and controller hooks               |
-| `frontend/web/tests/` | Future web/controller tests                                  |
+| `frontend/web/src/`   | React presentation and controller hooks                      |
+| `frontend/web/tests/` | Web/controller tests                                         |
 | `shared/game/`        | Pure TypeScript state, rules, rolling, and engine tests      |
 | `shared/ai/`          | Four difficulty profiles, scoring, forecasting, and AI tests |
 | `shared/types/`       | Shared platform-independent types                            |
 | `assets/`             | Branding, bricks, icons, backgrounds, audio, fonts           |
-| `backend/`            | Empty placeholders until the PvP stage                       |
+| `backend/`            | Local authoritative PvP API                                  |
 | `docs/`               | Canonical rules, architecture, AI, style, decisions, roadmap |
 
-The Android client will live in the separate private `EpicStack-Mobile` repository in Stage 8. Root tooling serves one project; no
+The Android client lives in the separate private `EpicStack-Mobile` repository. Root tooling serves one project; no
 workspace framework or package publishing is needed. Shared production code is type-checked
 separately without DOM or Node globals.
 
 Start with [the roadmap](docs/ROADMAP.md), [game rules](docs/GAME_RULES.md), and
 [contributing instructions](CONTRIBUTING.md). Coding agents must follow [AGENTS.md](AGENTS.md).
+
+## Local multiplayer backend
+
+Run `npm run backend:start` to build and start the Stage 9 API at
+`http://127.0.0.1:8787`. Rooms reset when the process stops. See
+[the API contract](docs/PVP_API.md) for create/join/move requests. Start `npm run dev` as well and choose **Play a friend**.
+See [local multiplayer usage](docs/MULTIPLAYER.md) for two-tab play and reconnect.
+Production web and Android builds remain PvE until a hosted backend is configured.

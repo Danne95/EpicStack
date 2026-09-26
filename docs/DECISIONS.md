@@ -189,3 +189,24 @@ is reused, so individual shared package publishing is unnecessary at this stage.
 
 Android builds omit the web service worker because assets are bundled with each APK.
 No Android integration or Capacitor dependency is added to the public game repository.
+
+## 2026-09-16 — Local PvP foundation; Android verification deferred
+
+The user explicitly deferred Android device debugging and requested Stage 9, choosing a
+local backend before hosting. Stage 8 runtime checks remain open rather than marked complete.
+Use Node's built-in HTTP server and the existing Vite toolchain, with no added dependencies.
+Keep transient rooms in one process while establishing the API and authoritative move flow.
+Token-based player identity and revision checks prevent impersonation and stale moves.
+The backend calls the existing engine; PvE never depends on backend availability.
+Durable storage and internet deployment are future work. Stage 10 provides the friend-play UI.
+
+## 2026-09-16 — Stage 10 local friend play
+
+Use short HTTP polling instead of adding WebSockets or a networking library. Turn-based
+play tolerates a 1.5-second update interval. Keep per-tab credentials in sessionStorage so
+separate players can test in separate tabs and reload to reconnect. Never put tokens in
+invitation links. Require explicit confirmation before forgetting a seat.
+
+Keep local multiplayer visible only during development until a hosted backend is available.
+Do not imply that a localhost invitation can reach a friend on another computer. Closing a
+room locally is not a forfeit and does not change canonical rules or PvE statistics.

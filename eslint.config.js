@@ -6,7 +6,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'coverage/**', 'node_modules/**'] },
+  { ignores: ['dist/**', 'dist-backend/**', 'coverage/**', 'node_modules/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -14,7 +14,7 @@ export default tseslint.config(
     languageOptions: { globals: globals.serviceworker },
   },
   {
-    files: ['*.{js,ts}'],
+    files: ['*.{js,ts}', 'backend/**/*.ts'],
     languageOptions: { globals: globals.node },
   },
   {

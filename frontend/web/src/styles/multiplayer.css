@@ -1,0 +1,70 @@
+.pvp-lobby {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.pvp-card {
+  padding: 32px;
+  border: 1px solid var(--divider);
+  border-radius: 12px;
+  background: var(--surface-secondary);
+}
+.pvp-card label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.pvp-card input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid var(--text-muted);
+  border-radius: 8px;
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  margin-bottom: 16px;
+}
+.pvp-card .small-note {
+  margin-top: 20px;
+}
+.pvp-local-note {
+  grid-column: 1 / -1;
+}
+.pvp-invite {
+  max-width: 680px;
+  margin: 24px auto;
+}
+.pvp-room-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--divider);
+  margin-bottom: 20px;
+}
+.pvp-room-bar p {
+  margin: 0;
+}
+.pvp-room-bar strong {
+  letter-spacing: 0.08em;
+}
+.pvp-room-actions {
+  margin-top: 24px;
+}
+.multiplayer-screen .game-topline > a {
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .pvp-lobby {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .pvp-card {
+    padding: 20px;
+  }
+  .multiplayer-screen .game-topline {
+    flex-wrap: wrap;
+  }
+}

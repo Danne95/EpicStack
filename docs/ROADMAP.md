@@ -147,7 +147,9 @@ check (134 existing tests) and both web/Android builds. Gradle assembleDebug suc
 JDK 21 and SDK 36. No device or emulator was available; Stage 8 remains in progress pending
 Android runtime verification and later release-signing decisions.
 
-## Stage 9 — PvP architecture
+Android device debugging was deferred by the user on 2026-09-16 to begin Stage 9.
+
+## Stage 9 — PvP architecture (local foundation complete)
 
 - Introduce a lightweight authoritative backend using the existing engine.
 - Support create game → room/invitation → friend joins → alternating turns.
@@ -156,8 +158,26 @@ Android runtime verification and later release-signing decisions.
   status, winner, and timestamps.
 - Keep PvE usable independently of backend availability.
 
-## Stage 10 — PvP features
+Verified on 2026-09-16: formatting, lint, types, web build, and backend build passed.
+The existing 134 tests passed; three new backend tests passed after correcting an error-code
+assertion. Coverage includes room creation/joining, authentication, stale revisions, illegal
+moves, turn advancement, HTTP requests, and input limits. The compiled server also passed a
+health smoke check. Hosting and durable storage remain future work; Stage 10 adds the local multiplayer UI.
 
-- Invite friend, room codes, share links, reconnect, turn synchronization, and win/loss state.
+## Stage 10 — PvP features (local development version complete)
+
+- [x] Create a room, invite by link or code, and join in a second browser session.
+- [x] Restore a player's seat on refresh and synchronize turns from the authoritative server.
+- [x] Show connection recovery, waiting state, and each player's correct win/loss result.
+- [x] Keep tokens out of links, require confirmation to forget a seat, and keep PvE statistics separate.
+- [x] Keep browser multiplayer off in production until a hosted backend is configured.
 - Defer public matchmaking, global accounts, chat, leaderboards, friends systems, and ranked
   competitive play to separately agreed stages.
+
+Verified on 2026-09-26: all 140 tests passed and the production web build completed.
+Three focused multiplayer tests cover restored seats, recovered connections, stale polls,
+duplicate submissions, and synchronized victory. Two browser sessions completed the room,
+invitation, turn, refresh, offline recovery, and result flow without browser errors.
+Desktop (1280px), tablet (820px), and phone (390px) layouts had no horizontal overflow.
+The local API still uses in-memory rooms and must be running alongside Vite; internet play,
+durable storage, and Android device debugging are not part of this local milestone.
