@@ -128,7 +128,7 @@ build, offline reload and complete game, and waiting-update activation after the
 Published on 2026-09-15 at https://danne95.github.io/EpicStack/. Hosted checks and deployment
 passed; the live site reloaded offline and completed a human/computer turn without errors.
 
-## Stage 8 — Android (in progress; iPhone deferred)
+## Stage 8 — Mobile clients (in progress)
 
 - [x] Use a private EpicStack-Mobile repository for the Android shell.
 - [x] Reuse the existing React interface inside Capacitor; bundle the game for first-launch offline play.
@@ -139,7 +139,8 @@ passed; the live site reloaded offline and completed a human/computer turn witho
 - [ ] Verify gameplay, settings/statistics persistence, sound, system bars, back navigation, and offline launch on Android.
 - Preserve identical engine/AI decisions by using the same shared implementation.
 - Keep signing keys outside Git. Store publication and release signing need separate setup.
-- Do not add an iOS project or iPhone build dependencies; reconsider that platform later.
+- Add iOS support in the same private EpicStack-Mobile repository, reusing the existing React interface and shared game implementation.
+- Verify the same mobile behaviors on iPhone before considering the mobile stage complete.
 
 Android foundation completed on 2026-09-16 in the private EpicStack-Mobile repository.
 Capacitor 8.5.2 packages public game commit acaf6d4. The shared project passed one quality
@@ -147,7 +148,8 @@ check (134 existing tests) and both web/Android builds. Gradle assembleDebug suc
 JDK 21 and SDK 36. No device or emulator was available; Stage 8 remains in progress pending
 Android runtime verification and later release-signing decisions.
 
-Android device debugging was deferred by the user on 2026-09-16 to begin Stage 9.
+Android device debugging was deferred by the user on 2026-09-16 to begin Stage 9. On 2026-09-26,
+the user brought iPhone back into scope alongside Android so PvP can be developed for all clients.
 
 ## Stage 9 — PvP architecture (local foundation complete)
 
@@ -181,3 +183,26 @@ invitation, turn, refresh, offline recovery, and result flow without browser err
 Desktop (1280px), tablet (820px), and phone (390px) layouts had no horizontal overflow.
 The local API still uses in-memory rooms and must be running alongside Vite; internet play,
 durable storage, and Android device debugging are not part of this local milestone.
+
+## Stage 11 — Hosted cross-platform PvP (in progress)
+
+1. **Supabase schema and migrations** — Store canonical room state and token hashes in the
+   public `EpicStack` repository. Keep the Data API disabled; the Node server connects to
+   Postgres and remains the only client-facing authority.
+2. **Persistent room service** — Replace the process-local Map with a repository that survives
+   restarts. Commit joins and moves atomically against the expected revision; expire rooms after
+   24 hours without activity. Preserve the in-memory service for isolated tests and local development.
+3. **Hosted API hardening** — Bind to the deployment platform's interface and port, configure
+   explicit web/native origins, add room lifecycle and request limits, and retain health checks.
+4. **Shared client configuration** — Use one API origin for the web build and the pinned game
+   used by Android/iOS. Keep credentials server-side; clients only hold per-seat game tokens.
+5. **Deployment** — Deploy the API with its Postgres connection string in the host's secret
+   settings. Keep schema migrations in `EpicStack`; do not put database secrets in either repo.
+6. **Cross-platform verification** — Verify create/join, invitations, reconnects, stale moves,
+   and completion across web, Android, and iOS. Keep PvE playable offline.
+
+Current substep: 1. Supabase project created and the first schema migration is written locally
+at `supabase/migrations/20260926000000_create_pvp_rooms.sql`. It still needs to be linked and
+applied to the remote project. The GitHub repository is linked at the repository root with
+Deploy to production enabled, so pushing this migration to `main` will apply it. The API hosting
+provider is not yet configured. Room records expire after 24 hours without a successful join or move.

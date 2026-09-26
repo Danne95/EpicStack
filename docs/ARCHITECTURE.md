@@ -151,8 +151,9 @@ belong to the platform layer when their stages arrive.
 
 ## Clients and repository visibility
 
-Updated 2026-09-16: EpicStack stays public. EpicStack-Mobile is a separate private repository
-for Android. iPhone is deferred; no iOS project or dependencies are created.
+Updated 2026-09-26: EpicStack stays public. EpicStack-Mobile is a separate private repository
+for Android and iOS. Both mobile clients reuse the existing React interface and public game
+dependency. One hosted PvP API serves web and both mobile clients.
 
 ```text
 EpicStack/                         PUBLIC
@@ -166,6 +167,7 @@ EpicStack/                         PUBLIC
 EpicStack-Mobile/                  PRIVATE
 ├── game/                          Git submodule pinned to a public EpicStack commit
 ├── android/                       Capacitor Android integration
+├── ios/                            Capacitor iOS integration
 ├── scripts/                       Build helpers
 ├── capacitor.config.json
 ├── package.json
@@ -173,19 +175,20 @@ EpicStack-Mobile/                  PRIVATE
 ```
 
 The user chose to reuse the existing interface. Capacitor packages the production web build
-and runs the same TypeScript engine and AI within Android WebView. No separately maintained
-mobile interface or copied rule implementation is needed. The submodule is a pinned upstream
-dependency, not a fork: edit canonical game code in EpicStack, publish it, then deliberately
+and runs the same TypeScript engine, AI, and PvP interface within mobile WebViews. No separately
+maintained mobile interface or copied rule implementation is needed. The submodule is a pinned
+upstream dependency, not a fork: edit canonical game code in EpicStack, publish it, then deliberately
 advance the mobile submodule and rebuild.
 
 The public build:android command emits the same game without a service worker. Android
 bundles all web assets, so offline play does not require a first online visit and stale web
 caches cannot override an APK update. Capacitor dependencies stay in the private repository.
-No hosted server URL is used by the Android app.
+Current mobile builds do not use a hosted server URL; Stage 11 will configure Android and iOS to
+use the same hosted PvP service as the web client.
 
-Web deployment and Android APK releases remain independent. Local statistics belong to the
+Web deployment and mobile releases remain independent. Local statistics belong to each client
 installation and do not sync with the website. Signing keys remain outside Git. The initial
-debug application ID is io.github.danne95.epicstack; review it before any store release.
+Android debug application ID is io.github.danne95.epicstack; review it before any store release.
 
 PvP Client → Authoritative Backend → Shared Game Engine
 

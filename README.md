@@ -4,11 +4,13 @@ A turn-based number-ordering game: build a tower of ten bricks in ascending orde
 smallest at the top, before your opponent does.
 
 The initial target is a polished PvE web game hosted on GitHub Pages, playable offline
-once loaded, without a backend. Android device verification is deferred; iPhone is deferred. Stage 9 provides a local PvP API.
+once loaded, without a backend. Android device verification is deferred. Stage 9–10 provide
+local PvP; Stage 11 plans one hosted PvP service for web, Android, and iOS.
 
 The web client, shared rules/AI, and common assets stay in this public repository. Stage 8
 uses a separate private EpicStack-Mobile repository for Android, with the existing interface
-and a pinned public game dependency. iPhone is deferred. See the [future directory plan](docs/ARCHITECTURE.md#future-clients-and-repository-visibility).
+and a pinned public game dependency. iOS is now back in scope for shared mobile PvP. See the
+[future directory plan](docs/ARCHITECTURE.md#future-clients-and-repository-visibility).
 
 ## Current status
 
@@ -82,4 +84,4 @@ Run `npm run backend:start` to build and start the Stage 9 API at
 `http://127.0.0.1:8787`. Rooms reset when the process stops. See
 [the API contract](docs/PVP_API.md) for create/join/move requests. Start `npm run dev` as well and choose **Play a friend**.
 See [local multiplayer usage](docs/MULTIPLAYER.md) for two-tab play and reconnect.
-Production web and Android builds remain PvE until a hosted backend is configured.
+Production web and mobile builds remain PvE until Stage 11 configures a hosted backend.

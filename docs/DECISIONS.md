@@ -210,3 +210,21 @@ invitation links. Require explicit confirmation before forgetting a seat.
 Keep local multiplayer visible only during development until a hosted backend is available.
 Do not imply that a localhost invitation can reach a friend on another computer. Closing a
 room locally is not a forfeit and does not change canonical rules or PvE statistics.
+
+## 2026-09-26 — One hosted PvP service for web and mobile
+
+The user brought iPhone back into scope alongside Android and chose to plan PvP across web,
+Android, and iOS together. Use one hosted authoritative API and one durable room store for all
+clients. Reuse the existing React interface, shared engine, and multiplayer protocol; centralize
+the service endpoint so platform builds do not grow separate networking implementations.
+
+The local Stage 9/10 backend is the starting point, not the hosted solution: it binds to loopback,
+stores rooms in memory, and only allows local web origins. Hosted work must add HTTPS deployment,
+atomic durable room updates, room lifecycle and request limits, and client configuration for web
+and native builds. Keep PvE offline-capable. Native packaging and invitation links may still need
+platform settings, but game rules, room behavior, and service API remain shared. This supersedes
+the 2026-09-16 decision to defer iPhone.
+
+The user defines a room as the invitation-backed match between two players and chose to delete
+it after 24 hours without activity. Successful joins and moves refresh the expiry window. This
+is storage cleanup only; it does not add a turn limit or change game rules.
