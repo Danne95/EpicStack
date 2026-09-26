@@ -92,7 +92,7 @@ export class PvpController {
       this.update({ storageAvailable: false });
     }
   }
-  private accept(room: RoomView): void {
+  private async accept(room: RoomView): Promise<void> {
     const previous = this.state.room;
     if (previous?.code === room.code && previous.revision > room.revision) return;
     this.update({
@@ -101,6 +101,20 @@ export class PvpController {
       error: null,
       selected: previous?.revision === room.revision ? this.state.selected : null,
     });
+    await this.autoDrawIfNeeded();
+  }
+  private async autoDrawIfNeeded(): Promise<void> {
+    const { room, connected, pending } = this.state;
+    if (
+      pending ||
+      !connected ||
+      !room ||
+      room.status !== 'playing' ||
+      room.playerId !== room.game?.turn.playerId ||
+      room.game?.turn.phase !== 'awaiting-draw'
+    )
+      return;
+    await this.move('draw');
   }
   private failure(error: unknown): void {
     const code = error instanceof PvpError ? error.code : 'UNAVAILABLE';
@@ -123,7 +137,7 @@ export class PvpController {
     this.reading = true;
     try {
       const room = await this.api.read(seat);
-      if (generation === this.generation) this.accept(room);
+      if (generation === this.generation) await this.accept(room);
     } catch (error) {
       if (generation === this.generation) this.failure(error);
     } finally {
@@ -144,7 +158,7 @@ export class PvpController {
       if (generation !== this.generation) return;
       this.seat = { code: result.room.code, token: result.token };
       this.save();
-      this.accept(result.room);
+      await this.accept(result.room);
     } catch (error) {
       if (generation === this.generation)
         this.update({
@@ -154,7 +168,10 @@ export class PvpController {
               : 'Unable to reach the backend. Start it and try again. If a room was created but its response was lost, create a new room.',
         });
     } finally {
-      if (generation === this.generation) this.update({ pending: false });
+      if (generation === this.generation) {
+        this.update({ pending: false });
+        await this.autoDrawIfNeeded();
+      }
     }
   };
   select = (position: number): void => {
@@ -177,12 +194,13 @@ export class PvpController {
           ? { type, revision: room.revision }
           : { type, revision: room.revision, position: selected! };
       const result = await this.api.move(this.seat, move);
-      if (generation === this.generation) this.accept(result);
+      if (generation === this.generation) await this.accept(result);
     } catch (error) {
       if (generation === this.generation) this.failure(error);
     } finally {
       if (generation === this.generation) {
         this.update({ pending: false });
+        await this.autoDrawIfNeeded();
         void this.refresh();
       }
     }

@@ -228,3 +228,33 @@ the 2026-09-16 decision to defer iPhone.
 The user defines a room as the invitation-backed match between two players and chose to delete
 it after 24 hours without activity. Successful joins and moves refresh the expiry window. This
 is storage cleanup only; it does not add a turn limit or change game rules.
+
+## 2026-09-26 — Durable rooms through the existing Node API
+
+Use the small `pg` driver and a shared asynchronous room-store interface. Keep game operations
+in one RoomService using the existing engine; memory and Postgres stores implement persistence
+without separate rules. PostgreSQL row locks serialize joins and moves across API processes,
+while revision checks reject stale commands. A transaction advisory lock preserves the existing
+500-room capacity during concurrent creation.
+
+Store a versioned canonical game snapshot and credential hashes. Validate snapshots before
+restoration so incompatible or corrupt records fail without being overwritten. Expired rooms
+become inaccessible immediately and are swept at startup, creation, and hourly. Only successful
+joins and moves renew their 24-hour lifetime.
+
+Keep the connection string in the ignored backend environment file or host secrets. Remote
+connections verify TLS certificates. Production requires a configured database; connection
+failures never silently switch to memory. A separate opt-in integration suite targets a dedicated
+test database so ordinary checks require no database credentials or external service.
+
+## 2026-09-26 — Automatic draws and round display
+
+Draw a value automatically when the local human's turn begins in PvE and when the authenticated
+friend-play seat reaches `awaiting-draw`. The authoritative server still performs and validates
+the draw through the existing move API; the client does not choose its value. Keep the engine's
+turn number as the per-player-action sequence used by stored states and revisions. Present
+`ceil(turn number / 2)` as the round number, so it advances after both sides have acted.
+
+Remove secondary game-page copy and the draw action button to make the number and placement
+choice the focus. Keep sound preferences in Settings, and use a small owner marker beside the
+drawn value to show whose tower receives it.

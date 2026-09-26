@@ -16,7 +16,7 @@ Shared Game Engine
 Game State
 ```
 
-The controller sequences draw, selection, confirmation, AI turns, and presentation effects.
+The controller sequences automatic draws, selection, confirmation, AI turns, and presentation effects.
 The engine validates moves and returns state updates. UI reflects state; it never decides
 whether a move wins or is legal. Animation timing cannot determine game outcomes.
 
@@ -74,6 +74,9 @@ when a drawn brick exists; a won state always has a winner and a completed turn.
 only data, not callbacks, clocks, or platform handles. Arrays may be structurally shared between
 snapshots; callers must respect their readonly types. Transitions also work with frozen inputs.
 Use states produced by the engine; arbitrary deserialized state validation is not implemented.
+
+The backend persistence boundary now validates its own versioned room snapshots before passing
+restored state to the engine. This does not change the shared engine's caller contract.
 
 The `Deck` type represents only the initial shuffled 1–100 sequence. No future deck is stored
 in game state. Each roll samples the eighty values absent from both towers, and `discardedBricks`
@@ -228,7 +231,7 @@ between screens. Settings apply to the next match. Refreshing discards the in-me
 the active match is not saved. Stage 6 stores preferences and completed-game statistics locally.
 
 `hooks/gameController.ts` is a pure reducer coordinating the shared engine and AI. It guards
-UI actions, retains selection until explicit confirmation, and rejects stale computer results
+UI actions, draws automatically when a local player's turn begins, retains selection until explicit confirmation, and rejects stale computer results
 by expected-state identity. `useGame.ts` supplies browser random samples before dispatch,
 keeping reducer replay deterministic under React Strict Mode. Computer work is scheduled on
 a 550ms timer so the thinking state is perceptible, and cancelled when the game screen is left
@@ -263,6 +266,20 @@ atomic service operation. In-memory storage is intentionally limited to local de
 see [the API contract](PVP_API.md) and backend/database/README.md for persistence requirements.
 The existing Vite installation bundles the Node entry point into dist-backend/server.cjs.
 The web build and GitHub Pages deployment do not include or start this server.
+
+## Stage 11 — Durable room storage
+
+`RoomService` owns game actions once, behind the asynchronous `RoomStore` interface. Memory
+storage supports local development; `PostgresRoomStore` uses `pg` for direct Supabase Postgres
+access, parameterized queries, and pooled transactions. `pg` is the only new runtime dependency
+and is external to the Node bundle; deploy it with production npm dependencies. No database
+driver or credentials enter the web/mobile builds or shared engine.
+
+Postgres locks a room while a synchronous service callback validates and applies a join or move.
+Failure rolls back. Creation serializes capacity checks with a database advisory lock. Persisted
+game JSON has a version envelope and is validated when read; public snapshots keep their existing
+shape. Both stores expire rooms after 24 hours without accepted action. See
+[room storage](../backend/database/README.md) for setup, TLS, cleanup, and database verification.
 
 ## Stage 10 — Local multiplayer presentation
 

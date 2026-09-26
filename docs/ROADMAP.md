@@ -201,8 +201,18 @@ durable storage, and Android device debugging are not part of this local milesto
 6. **Cross-platform verification** — Verify create/join, invitations, reconnects, stale moves,
    and completion across web, Android, and iOS. Keep PvE playable offline.
 
-Current substep: 1. Supabase project created and the first schema migration is written locally
-at `supabase/migrations/20260926000000_create_pvp_rooms.sql`. It still needs to be linked and
-applied to the remote project. The GitHub repository is linked at the repository root with
-Deploy to production enabled, so pushing this migration to `main` will apply it. The API hosting
-provider is not yet configured. Room records expire after 24 hours without a successful join or move.
+Current substep: 2. The initial schema migration was pushed to `main` in commit `4e43b48`.
+The GitHub repository is linked at the repository root with Deploy to production enabled;
+successful migration application in the remote Supabase project still needs confirmation.
+
+Persistent room storage is implemented locally. The Node API selects Postgres when
+`DATABASE_URL` is configured and retains in-memory storage for local development. Transactions
+serialize joins and moves, stored state is versioned and validated, and rooms expire after
+24 hours without a successful join or move. Polling does not renew expiry.
+
+Verified on 2026-09-26: formatting, lint, strict types, all 152 tests, the production web build,
+and the backend build passed. The compiled backend passed a local health smoke check.
+Live Postgres persistence and the separate database integration suite remain unverified because
+no database connection was supplied. Follow `backend/database/README.md` to connect locally
+and confirm a match survives an API restart before moving to hosted API hardening.
+The API hosting provider is not yet configured; production multiplayer remains disabled.

@@ -9,7 +9,8 @@ Open two terminals in EpicStack:
 3. Open http://127.0.0.1:5173 and choose **Play a friend**.
 4. Create a room, then copy its invitation link or ten-character code.
 5. Open a separate tab by pasting the link, or use another browser profile. Join the room.
-6. Each player draws, selects one of their own bricks, and confirms. Turns and results
+6. Each player's brick is drawn automatically on their turn. They select one of their own bricks
+   and confirm. Turns and results
    update automatically, normally within 1.5 seconds.
 
 Both local players must use the same web origin. Do not duplicate an existing player tab
@@ -40,7 +41,9 @@ PvP results are separate from existing computer-game statistics.
 
 If browser storage is unavailable, play works while the screen stays mounted, but refreshing
 or leaving that screen loses the seat. A visible notice explains this limitation.
-If the server restarts, all rooms are lost and the client prompts for a new room. A create/join
+With default memory storage, a server restart loses all rooms and the client prompts for a new
+room. Configured Postgres storage keeps rooms across restarts. Both modes expire rooms after
+24 hours without a join or move; polling does not extend expiry. A create/join
 request whose response is lost cannot recover its newly issued token; create a new room.
 
 ## Implementation boundaries

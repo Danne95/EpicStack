@@ -40,6 +40,9 @@ async function pair() {
   await result.host.open();
   await result.guest.open(result.host.getSnapshot().room!.code);
   await result.host.refresh();
+  const game = result.host.getSnapshot().room!.game!;
+  const active = [result.host, result.guest][game.turn.playerId]!;
+  expect(active.getSnapshot().room!.game!.turn.phase).toBe('awaiting-placement');
   return result;
 }
 it('restores a seat, recovers a connection, and shares only the invitation code', async () => {
@@ -65,6 +68,7 @@ it('restores a seat, recovers a connection, and shares only the invitation code'
 it('ignores old polls and repeated submissions while a move is pending', async () => {
   const { api, host, guest } = await pair();
   const actor = host.getSnapshot().room!.game!.turn.playerId === 0 ? host : guest;
+  await actor.refresh();
   const old = actor.getSnapshot().room!;
   let resolveRead!: (room: RoomView) => void;
   vi.spyOn(api, 'read').mockImplementationOnce(
@@ -74,21 +78,34 @@ it('ignores old polls and repeated submissions while a move is pending', async (
       }),
   );
   const poll = actor.refresh();
-  const move = vi.spyOn(api, 'move');
-  await Promise.all([actor.move('draw'), actor.move('draw')]);
+  actor.select(0);
+  const originalMove = api.move.bind(api);
+  let releaseMove!: () => void;
+  const move = vi.spyOn(api, 'move').mockImplementationOnce(async (seat, command) => {
+    await new Promise<void>((resolve) => {
+      releaseMove = resolve;
+    });
+    return originalMove(seat, command);
+  });
+  const submission = actor.move('replace');
+  await Promise.resolve();
+  await actor.move('replace');
+  releaseMove();
+  await submission;
   resolveRead(old);
   await poll;
   expect(move).toHaveBeenCalledTimes(1);
   expect(actor.getSnapshot().room!.revision).toBe(old.revision + 1);
-  expect(actor.getSnapshot().room!.game!.turn.phase).toBe('awaiting-placement');
+  expect(actor.getSnapshot().room!.game!.turn.phase).toBe('awaiting-draw');
 });
 it('synchronizes both players through a complete game and preserves the winning result', async () => {
   const { host, guest } = await pair();
   const players = [host, guest] as const;
   for (let turn = 0; turn < 300 && host.getSnapshot().room!.game!.status !== 'won'; turn++) {
     const actor = players[host.getSnapshot().room!.game!.turn.playerId];
-    await actor.move('draw');
+    await actor.refresh();
     const room = actor.getSnapshot().room!;
+    expect(room.game!.turn.phase).toBe('awaiting-placement');
     actor.select(chooseMove(room.game!, room.playerId)!.position);
     await actor.move('replace');
     await Promise.all(players.map((player) => player.refresh()));

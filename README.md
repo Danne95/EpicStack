@@ -25,7 +25,8 @@ with six explainable scores. Easy favors immediate fit, Medium balances ordering
 Hard considers feasible ranges, and Expert evaluates possible future rolls. All follow the
 same game rules. Easy's decision randomness is separate from the game's rolls.
 Run `npm run dev` to play. The web app includes the menu, game board, settings, and instructions.
-Draw a brick, select a tower position, and confirm; the computer then takes its turn.
+Your brick is drawn automatically at the start of each turn. Select a tower position and confirm;
+the computer then takes its turn.
 Preferences and completed-game statistics are saved in this browser. Active matches stay
 in memory while navigating but reset on refresh. Settings shows records for each difficulty.
 Restart restores the opening towers; New game deals fresh towers. Sound can be muted,
@@ -81,7 +82,9 @@ Start with [the roadmap](docs/ROADMAP.md), [game rules](docs/GAME_RULES.md), and
 ## Local multiplayer backend
 
 Run `npm run backend:start` to build and start the Stage 9 API at
-`http://127.0.0.1:8787`. Rooms reset when the process stops. See
+`http://127.0.0.1:8787`. Rooms reset when the process stops unless `DATABASE_URL` is configured
+in the ignored `backend/.env` file. [Supabase storage setup](backend/database/README.md) explains
+how to keep rooms across restarts. Rooms expire after 24 hours without a join or move. See
 [the API contract](docs/PVP_API.md) for create/join/move requests. Start `npm run dev` as well and choose **Play a friend**.
 See [local multiplayer usage](docs/MULTIPLAYER.md) for two-tab play and reconnect.
 Production web and mobile builds remain PvE until Stage 11 configures a hosted backend.

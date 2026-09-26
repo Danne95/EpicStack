@@ -37,7 +37,8 @@ or draw; it is an explicit initialization error, not a new gameplay outcome.
 2. **Replace:** choose any one of the current player's ten positions and replace its brick
    with the rolled value. The removed value leaves the tower and is recorded in discard history.
 3. **Check victory:** if the resulting tower is strictly ascending, that player wins immediately.
-4. **End turn:** otherwise advance to the other player and increment the turn number.
+4. **End turn:** otherwise advance to the other player and increment the engine turn number.
+   The web interface groups each pair of player turns as a displayed round.
 
 There is no finite draw pile, exhaustion rule, reshuffle during play, or automatic turn limit.
 A removed value becomes eligible for subsequent rolls, including the next player's turn.

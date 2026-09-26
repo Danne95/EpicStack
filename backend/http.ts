@@ -67,30 +67,36 @@ export function createPvpServer(service = new RoomService()): Server {
           throw new RoomError('ORIGIN_NOT_ALLOWED', 403);
         const path = new URL(request.url ?? '/', 'http://localhost').pathname;
         if (request.method === 'GET' && path === '/health') {
+          try {
+            await service.check();
+          } catch {
+            respond(response, 503, { error: 'STORAGE_UNAVAILABLE' });
+            return;
+          }
           respond(response, 200, { status: 'ok' });
           return;
         }
         if (request.method === 'POST' && path === '/rooms') {
           empty(await body(request));
-          respond(response, 201, service.create());
+          respond(response, 201, await service.create());
           return;
         }
         const route = /^\/rooms\/([A-F0-9]{10})(?:\/(join|moves))?$/.exec(path);
         if (!route) throw new RoomError('NOT_FOUND', 404);
         const code = route[1]!;
         if (request.method === 'GET' && !route[2]) {
-          respond(response, 200, { room: service.read(code, token(request)) });
+          respond(response, 200, { room: await service.read(code, token(request)) });
           return;
         }
         if (request.method === 'POST' && route[2] === 'join') {
           empty(await body(request));
-          respond(response, 200, service.join(code));
+          respond(response, 200, await service.join(code));
           return;
         }
         if (request.method === 'POST' && route[2] === 'moves') {
           const credential = token(request);
           respond(response, 200, {
-            room: service.move(code, credential, parseMove(await body(request))),
+            room: await service.move(code, credential, parseMove(await body(request))),
           });
           return;
         }

@@ -150,8 +150,8 @@ function LocalMultiplayer() {
               selected={selected}
               ready={connected && !pending}
               onSelect={controller.select}
-              onMove={(type) => {
-                void controller.move(type);
+              onMove={() => {
+                void controller.move('replace');
               }}
             />
           )}

@@ -12,48 +12,52 @@ function service(): RoomService {
     return seed / 4294967296;
   });
 }
-function setup() {
+async function setup() {
   const rooms = service();
-  const host = rooms.create();
-  const guest = rooms.join(host.room.code);
+  const host = await rooms.create();
+  const guest = await rooms.join(host.room.code);
   const players = [host, guest] as const;
   const current = guest.room.game!.turn.playerId;
   return { rooms, code: host.room.code, players, current };
 }
 
 describe('authoritative rooms', () => {
-  it('waits for a guest, admits only two players, and isolates public snapshots', () => {
+  it('waits for a guest, admits only two players, and isolates public snapshots', async () => {
     const rooms = service();
-    const host = rooms.create();
+    const host = await rooms.create();
     expect(host.room.status).toBe('waiting');
-    expect(() => rooms.move(host.room.code, host.token, { type: 'draw', revision: 0 })).toThrow(
-      'WAITING_FOR_PLAYER',
-    );
-    const guest = rooms.join(host.room.code);
+    await expect(
+      rooms.move(host.room.code, host.token, { type: 'draw', revision: 0 }),
+    ).rejects.toThrow('WAITING_FOR_PLAYER');
+    const guest = await rooms.join(host.room.code);
     expect(guest.room).toMatchObject({ revision: 1, playersJoined: 2, status: 'playing' });
-    expect(() => rooms.join(host.room.code)).toThrow('ROOM_FULL');
+    await expect(rooms.join(host.room.code)).rejects.toThrow('ROOM_FULL');
     expect(JSON.stringify(guest.room)).not.toContain(host.token);
     expect(guest.room).not.toHaveProperty('credentials');
     guest.room.game = null;
-    expect(rooms.read(host.room.code, host.token).game).not.toBeNull();
+    expect((await rooms.read(host.room.code, host.token)).game).not.toBeNull();
   });
 
-  it('authenticates players and rejects stale, out-of-turn, and illegal moves without changes', () => {
-    const { rooms, code, players, current } = setup();
+  it('authenticates players and rejects stale, out-of-turn, and illegal moves without changes', async () => {
+    const { rooms, code, players, current } = await setup();
     const actor = players[current];
-    expect(() => rooms.read(code, 'wrong')).toThrow('UNAUTHORIZED');
-    expect(() =>
+    await expect(rooms.read(code, 'wrong')).rejects.toThrow('UNAUTHORIZED');
+    await expect(
       rooms.move(code, players[1 - current]!.token, { type: 'draw', revision: 1 }),
-    ).toThrowError(expect.objectContaining({ code: 'NOT_CURRENT_PLAYER' }));
-    const drawn = rooms.move(code, actor.token, { type: 'draw', revision: 1 });
-    expect(() => rooms.move(code, actor.token, { type: 'draw', revision: 1 })).toThrow(
+    ).rejects.toThrowError(expect.objectContaining({ code: 'NOT_CURRENT_PLAYER' }));
+    const drawn = await rooms.move(code, actor.token, { type: 'draw', revision: 1 });
+    await expect(rooms.move(code, actor.token, { type: 'draw', revision: 1 })).rejects.toThrow(
       'STALE_REVISION',
     );
-    expect(() =>
+    await expect(
       rooms.move(code, actor.token, { type: 'replace', revision: 2, position: 10 }),
-    ).toThrowError(expect.objectContaining({ code: 'INVALID_POSITION' }));
-    expect(rooms.read(code, actor.token)).toEqual(drawn);
-    const replaced = rooms.move(code, actor.token, { type: 'replace', revision: 2, position: 0 });
+    ).rejects.toThrowError(expect.objectContaining({ code: 'INVALID_POSITION' }));
+    expect(await rooms.read(code, actor.token)).toEqual(drawn);
+    const replaced = await rooms.move(code, actor.token, {
+      type: 'replace',
+      revision: 2,
+      position: 0,
+    });
     expect(replaced.game!.turn).toMatchObject({
       playerId: 1 - current,
       phase: 'awaiting-draw',

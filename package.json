@@ -19,15 +19,18 @@
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "build:android": "npm run typecheck && vite build --config vite.config.ts --mode android",
     "backend:build": "tsc --project backend/tsconfig.json && vite build --config backend/vite.config.ts",
-    "backend:start": "npm run backend:build && node dist-backend/server.cjs"
+    "backend:start": "npm run backend:build && node --env-file-if-exists=backend/.env dist-backend/server.cjs",
+    "test:database": "node --env-file-if-exists=backend/.env node_modules/vitest/vitest.mjs run --config backend/integration/vitest.config.ts"
   },
   "dependencies": {
+    "pg": "^8.23.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^22.19.0",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.1.1",

@@ -6,7 +6,7 @@ interface Props {
   selected: number | null;
   ready: boolean;
   onSelect: (position: number) => void;
-  onMove: (type: 'draw' | 'replace') => void;
+  onMove: () => void;
 }
 export function PvpBoard({ room, selected, ready, onSelect, onMove }: Props) {
   const game = room.game;
@@ -15,7 +15,6 @@ export function PvpBoard({ room, selected, ready, onSelect, onMove }: Props) {
   const friend = you === 0 ? 1 : 0;
   const finished = game.status === 'won';
   const yourTurn = !finished && game.turn.playerId === you;
-  const canDraw = ready && yourTurn && game.turn.phase === 'awaiting-draw';
   const canSelect = ready && yourTurn && game.turn.phase === 'awaiting-placement';
   const drawn = game.turn.phase === 'awaiting-placement' ? game.turn.drawnBrick : null;
   const status = finished
@@ -26,8 +25,8 @@ export function PvpBoard({ room, selected, ready, onSelect, onMove }: Props) {
       ? 'Synchronizing the board…'
       : yourTurn
         ? drawn === null
-          ? 'Your turn. Draw a brick.'
-          : 'Choose a place for your brick.'
+          ? 'Your turn.'
+          : 'Place this brick.'
         : 'Your friend’s turn.';
   return (
     <div className="game-layout">
@@ -44,7 +43,9 @@ export function PvpBoard({ room, selected, ready, onSelect, onMove }: Props) {
         className={'turn-panel ' + (finished ? 'result-panel' : '')}
         aria-label="Turn controls"
       >
-        <p className="eyebrow">{finished ? 'THE FINAL STACK' : 'TURN ' + game.turn.number}</p>
+        <p className="eyebrow">
+          {finished ? 'THE FINAL STACK' : 'ROUND ' + Math.ceil(game.turn.number / 2)}
+        </p>
         <h2 role="status">{status}</h2>
         {finished ? (
           <>
@@ -61,12 +62,18 @@ export function PvpBoard({ room, selected, ready, onSelect, onMove }: Props) {
           </>
         ) : (
           <>
-            <div
-              className={'drawn-brick ' + (drawn !== null ? 'has-value' : '')}
-              aria-label={drawn === null ? 'No brick drawn' : 'Drawn brick ' + drawn}
-            >
-              <span>{drawn ?? '?'}</span>
-              <small>{yourTurn ? 'YOUR DRAWN BRICK' : 'FRIEND’S DRAWN BRICK'}</small>
+            <div className="drawn-brick-row">
+              <span className="brick-owner" aria-label={yourTurn ? 'Your brick' : 'Friend’s brick'}>
+                <span aria-hidden="true">▶</span>
+                {yourTurn ? 'You' : 'Friend'}
+              </span>
+              <div
+                className={'drawn-brick ' + (drawn !== null ? 'has-value' : '')}
+                aria-label={drawn === null ? 'No brick drawn' : 'Drawn brick ' + drawn}
+              >
+                <span>{drawn ?? '?'}</span>
+                <small>{yourTurn ? 'YOUR BRICK' : 'FRIEND’S BRICK'}</small>
+              </div>
             </div>
             <p className="placement-note">
               {canSelect && selected !== null
@@ -79,18 +86,15 @@ export function PvpBoard({ room, selected, ready, onSelect, onMove }: Props) {
                   ? 'Select a brick, then confirm your placement.'
                   : 'The board updates automatically.'}
             </p>
-            <button
-              className="button primary turn-action"
-              disabled={!(canDraw || (canSelect && selected !== null))}
-              onClick={() => onMove(canDraw ? 'draw' : 'replace')}
-            >
-              {canDraw ? 'Draw a brick' : yourTurn ? 'Confirm replacement' : 'Waiting for friend'}
-            </button>
-            <p className="turn-hint">
-              Smallest at the top.
-              <br />
-              Largest at the bottom.
-            </p>
+            {yourTurn ? (
+              <button
+                className="button primary turn-action"
+                disabled={!(canSelect && selected !== null)}
+                onClick={onMove}
+              >
+                Confirm replacement
+              </button>
+            ) : null}
           </>
         )}
       </section>

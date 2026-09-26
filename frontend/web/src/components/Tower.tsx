@@ -29,11 +29,6 @@ export function Tower({
           <p className="eyebrow">{label}</p>
           <h2>{title}</h2>
         </div>
-        <span className="tower-count">10 bricks</span>
-      </div>
-      <div className="tower-direction">
-        <span>Smallest</span>
-        <Icon name="down" />
       </div>
       <ol className="tower">
         {tower.map((brick, position) => (
@@ -77,10 +72,6 @@ export function Tower({
           </li>
         ))}
       </ol>
-      <div className="tower-direction bottom">
-        <span>Largest</span>
-        {winner ? <strong>Complete</strong> : <span>at the bottom</span>}
-      </div>
     </section>
   );
 }

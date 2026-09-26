@@ -1,7 +1,6 @@
 export function HowToPlayScreen() {
   return (
     <main id="main" className="reading-screen">
-      <p className="eyebrow accent">Simple rules. Thoughtful moves.</p>
       <h1 tabIndex={-1}>How to play</h1>
       <p className="lead">
         Be the first to arrange ten bricks from smallest at the top to largest at the bottom.
@@ -10,9 +9,10 @@ export function HowToPlayScreen() {
         <li>
           <span className="step-number">01</span>
           <div>
-            <h2>Draw a number</h2>
+            <h2>Get a number</h2>
             <p>
-              Each turn gives you a random number from 1–100 that isn’t already in either tower.
+              Each turn automatically gives you a random number from 1–100 that isn’t already in
+              either tower.
             </p>
           </div>
         </li>
@@ -47,9 +47,6 @@ export function HowToPlayScreen() {
           Using a keyboard? Tab to a brick, press Enter or Space to select it, then Tab to confirm.
         </p>
       </div>
-      <a className="button secondary" href="#/">
-        Back to menu
-      </a>
     </main>
   );
 }

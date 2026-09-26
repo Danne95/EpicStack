@@ -24,7 +24,7 @@ export function App() {
   const canResume =
     controller.session.game?.status === 'playing' && controller.session.error === null;
   useEffect(() => {
-    document.title = `EpicStack · ${screen === 'menu' ? 'Find your order' : screen === 'how-to-play' ? 'How to play' : screen}`;
+    document.title = `EpicStack · ${screen === 'menu' ? 'Play' : screen === 'how-to-play' ? 'How to play' : screen}`;
     document.querySelector<HTMLElement>('#main h1')?.focus();
   }, [screen]);
 
@@ -84,13 +84,10 @@ export function App() {
       ) : screen === 'game' ? (
         <GameScreen
           session={controller.session}
-          onDraw={controller.draw}
           onSelect={controller.select}
           onConfirm={controller.confirm}
           onRestart={controller.restart}
           onNewGame={() => controller.start(difficulty)}
-          muted={muted}
-          onMute={toggleMute}
         />
       ) : screen === 'multiplayer' ? (
         <MultiplayerScreen />
@@ -106,9 +103,8 @@ export function App() {
         <HowToPlayScreen />
       )}
       <footer className="site-footer">
-        <span>EPICSTACK</span>
+        <span>Made By FromEpicBrain</span>
         <OfflineStatus />
-        <span>A game of numbers. A matter of order.</span>
       </footer>
     </div>
   );

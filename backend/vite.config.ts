@@ -6,6 +6,6 @@ export default defineConfig({
     outDir: 'dist-backend',
     emptyOutDir: true,
     lib: { entry: 'backend/server.ts', formats: ['cjs'], fileName: () => 'server.cjs' },
-    rollupOptions: { external: [/^node:/] },
+    rollupOptions: { external: [/^node:/, 'pg'] },
   },
 });

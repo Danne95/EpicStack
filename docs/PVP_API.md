@@ -2,7 +2,8 @@
 
 Run `npm run backend:start` from the public repository. The server binds only to
 `127.0.0.1:8787`; set PORT to change the port. Stop with Ctrl+C. No service account,
-database installation, or new dependency is required. This is a local developer API;
+database installation is required for memory mode. Set `DATABASE_URL` in `backend/.env` for
+Supabase persistence; see [room storage setup](../backend/database/README.md). This is still a local developer API;
 Stage 10 adds a local browser interface. See [multiplayer usage](MULTIPLAYER.md).
 
 ## Protocol
@@ -44,19 +45,24 @@ not change game state or revision. Unknown errors return a generic 500 response.
 
 ## Scope and limitations
 
-Rooms live in one process, capped at 500 to bound room count. They are lost on restart;
-there is no expiry or deletion yet. Discard history grows with played turns, as in the
-canonical engine. Validation and commits are synchronous, so two commands cannot
-interleave a state update inside this process. A database implementation will need atomic
-revision checks before supporting multiple server instances.
+Both storage modes cap active rooms at 500. Memory mode loses rooms on restart; Postgres mode
+retains rooms and uses row locks plus revision checks to serialize commands across API processes.
+Rooms expire after 24 hours without an accepted join or move. Reads/rejected moves do not renew
+expiry. Expired rooms return `ROOM_NOT_FOUND`, and startup, creation, and hourly sweeps remove
+their rows. Discard history grows with played turns, as in the canonical engine.
 
 The server uses cryptographic randomness for room codes, credentials, and engine rolls.
 Tests inject predictable game randomness. Request/header timeouts are ten seconds and
 bodies are limited to 1 KiB. No CORS access is enabled. Browser Origin headers are allowed only for the local Vite
 origins http://127.0.0.1:5173 and http://localhost:5173. Vite proxies /api to this server.
-Before exposing this server publicly, add durable storage, lifecycle limits, request rate
+Durable storage and 24-hour room expiry are implemented. Before exposing this server publicly, add request rate
 limits, HTTPS deployment, and an explicit allowed browser origin policy. Do not expose
 this local prototype through a tunnel as a production service.
+
+`GET /health` checks storage and returns 503 with `STORAGE_UNAVAILABLE` if the database is
+unreachable or its schema is missing. Other unexpected storage failures return a generic 500
+without database details. An ambiguous command response still requires reading current state;
+the backend does not replay moves automatically.
 
 PvE makes no API requests and remains playable without this backend. GitHub Pages still
 hosts only the static web build. Android uses its pinned public game version independently.

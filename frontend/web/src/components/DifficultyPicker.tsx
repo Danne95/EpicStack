@@ -2,7 +2,7 @@ import type { Difficulty } from '../../../../shared/ai/difficulty';
 
 const OPTIONS: readonly { value: Difficulty; label: string; description: string }[] = [
   { value: 'easy', label: 'Easy', description: 'A little room to learn.' },
-  { value: 'medium', label: 'Medium', description: 'A thoughtful opponent.' },
+  { value: 'medium', label: 'Casual', description: 'A thoughtful opponent.' },
   { value: 'hard', label: 'Hard', description: 'Every placement matters.' },
   { value: 'expert', label: 'Expert', description: 'A challenge worth taking.' },
 ];

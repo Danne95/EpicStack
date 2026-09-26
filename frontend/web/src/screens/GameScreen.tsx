@@ -1,31 +1,19 @@
 import orderedSeal from '../../../../assets/branding/ordered-seal.svg';
-import { Icon } from '../components/Icon';
 import { GameControls } from '../components/GameControls';
 import { Tower } from '../components/Tower';
 import { HUMAN_PLAYER, COMPUTER_PLAYER } from '../hooks/gameController';
 import type { GameSession } from '../hooks/gameController';
+import { difficultyLabel } from '../difficultyLabels';
 
 interface Props {
   session: GameSession;
   onRestart: () => void;
   onNewGame: () => void;
-  muted: boolean;
-  onMute: () => void;
-  onDraw: () => void;
   onSelect: (position: number) => void;
   onConfirm: () => void;
 }
 
-export function GameScreen({
-  session,
-  onDraw,
-  onSelect,
-  onConfirm,
-  onRestart,
-  onNewGame,
-  muted,
-  onMute,
-}: Props) {
+export function GameScreen({ session, onSelect, onConfirm, onRestart, onNewGame }: Props) {
   const { game, selectedPosition, difficulty, error } = session;
   if (game === null)
     return (
@@ -39,7 +27,6 @@ export function GameScreen({
     );
   const finished = game.status === 'won';
   const humanTurn = !finished && game.turn.playerId === HUMAN_PLAYER;
-  const canDraw = humanTurn && game.turn.phase === 'awaiting-draw' && error === null;
   const canSelect = humanTurn && game.turn.phase === 'awaiting-placement' && error === null;
   const drawn = game.turn.phase === 'awaiting-placement' ? game.turn.drawnBrick : null;
   const selectedBrick =
@@ -49,21 +36,18 @@ export function GameScreen({
       ? 'You found your order.'
       : 'The computer takes this one.'
     : humanTurn
-      ? canDraw
-        ? 'Your turn. Draw a brick.'
-        : 'Choose a place for your brick.'
+      ? 'Place this brick.'
       : 'Computer’s turn.';
 
   return (
     <main id="main" className="game-screen">
+      <h1 className="visually-hidden" tabIndex={-1}>
+        Game
+      </h1>
       <div className="game-topline">
-        <div>
-          <p className="eyebrow">A little strategy. One brick at a time.</p>
-          <h1 tabIndex={-1}>The board</h1>
-        </div>
         <div className="game-meta">
-          <span className="capitalize">{difficulty}</span>
-          <span>Turn {game.turn.number}</span>
+          <span>{difficultyLabel(difficulty)}</span>
+          <span>Round {Math.ceil(game.turn.number / 2)}</span>
         </div>
       </div>
       {error !== null ? (
@@ -106,12 +90,21 @@ export function GameScreen({
             </>
           ) : (
             <>
-              <div
-                className={`drawn-brick ${drawn !== null ? 'has-value' : ''}`}
-                aria-label={drawn === null ? 'No brick drawn' : `Drawn brick ${drawn}`}
-              >
-                <span>{drawn ?? '?'}</span>
-                <small>{drawn === null ? 'YOUR NEXT NUMBER' : 'YOUR DRAWN BRICK'}</small>
+              <div className="drawn-brick-row">
+                <span
+                  className="brick-owner"
+                  aria-label={humanTurn ? 'Your brick' : 'Computer’s brick'}
+                >
+                  <span aria-hidden="true">▶</span>
+                  {humanTurn ? 'You' : 'Computer'}
+                </span>
+                <div
+                  className={`drawn-brick ${drawn !== null ? 'has-value' : ''}`}
+                  aria-label={drawn === null ? 'No brick drawn' : `Drawn brick ${drawn}`}
+                >
+                  <span>{drawn ?? '?'}</span>
+                  <small>{humanTurn ? 'YOUR BRICK' : 'COMPUTER’S BRICK'}</small>
+                </div>
               </div>
               <p className="placement-note">
                 {selectedPosition !== null ? (
@@ -120,33 +113,22 @@ export function GameScreen({
                     position {selectedPosition + 1}.
                   </>
                 ) : humanTurn ? (
-                  canDraw ? (
-                    'A fresh number. A new possibility.'
-                  ) : (
-                    'Select a brick in your tower to replace.'
-                  )
+                  'Select a brick to replace.'
                 ) : (
                   'The computer is choosing a placement.'
                 )}
               </p>
-              <button
-                className="button primary turn-action"
-                disabled={!(canDraw || (canSelect && selectedPosition !== null))}
-                onClick={canDraw ? onDraw : onConfirm}
-              >
-                <Icon name={canDraw ? 'draw' : 'check'} />
-                {canDraw ? 'Draw a brick' : humanTurn ? 'Confirm replacement' : 'Computer’s turn'}
-              </button>
-              <p className="turn-hint">
-                Smallest at the top.
-                <br />
-                Largest at the bottom.
-              </p>
+              {humanTurn ? (
+                <button
+                  className="button primary turn-action"
+                  disabled={!(canSelect && selectedPosition !== null)}
+                  onClick={onConfirm}
+                >
+                  Confirm replacement
+                </button>
+              ) : null}
             </>
           )}
-          {session.lastComputerMove !== null ? (
-            <p className="last-move">{session.lastComputerMove}</p>
-          ) : null}
         </section>
         <Tower
           title="Computer"
@@ -155,17 +137,7 @@ export function GameScreen({
           winner={finished && game.winner === COMPUTER_PLAYER}
         />
       </div>
-      <GameControls
-        finished={finished}
-        onRestart={onRestart}
-        onNewGame={onNewGame}
-        muted={muted}
-        onMute={onMute}
-      />
-      <div className="board-footer">
-        <a href="#/how-to-play">Need a refresher? Read the rules</a>
-        <span>Take your time. There’s no clock.</span>
-      </div>
+      <GameControls finished={finished} onRestart={onRestart} onNewGame={onNewGame} />
     </main>
   );
 }

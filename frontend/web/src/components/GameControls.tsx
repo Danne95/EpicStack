@@ -4,10 +4,8 @@ interface Props {
   finished: boolean;
   onRestart: () => void;
   onNewGame: () => void;
-  muted: boolean;
-  onMute: () => void;
 }
-export function GameControls({ finished, onRestart, onNewGame, muted, onMute }: Props) {
+export function GameControls({ finished, onRestart, onNewGame }: Props) {
   const [pending, setPending] = useState<'restart' | 'new' | null>(null);
   function request(action: 'restart' | 'new'): void {
     if (!finished) setPending(action);
@@ -22,9 +20,6 @@ export function GameControls({ finished, onRestart, onNewGame, muted, onMute }: 
         </button>
         <button className="button secondary" onClick={() => request('new')}>
           New game
-        </button>
-        <button className="button secondary" aria-pressed={muted} onClick={onMute}>
-          {muted ? 'Sound off' : 'Sound on'}
         </button>
       </div>
       {pending !== null ? (

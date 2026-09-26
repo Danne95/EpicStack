@@ -8,14 +8,11 @@
 }
 .menu-copy h1 {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(72px, 7.7vw, 108px);
+  font-size: clamp(48px, 5.2vw, 72px);
   font-weight: 400;
-  letter-spacing: -0.065em;
-  margin-bottom: 28px;
-}
-.menu-copy h1 em {
-  color: var(--accent-primary);
-  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+  margin-bottom: 24px;
 }
 .menu-intro {
   color: var(--text-muted);
@@ -94,14 +91,6 @@
   flex-direction: column;
   justify-content: space-between;
 }
-.art-caption {
-  display: grid;
-  text-align: center;
-  gap: 5px;
-  color: var(--text-muted);
-  font-size: 9px;
-  letter-spacing: 0.17em;
-}
 .display-stack {
   padding: 30px 0;
 }
@@ -120,11 +109,6 @@
   box-shadow:
     var(--brick-bevel),
     0 8px 14px #292d2510;
-}
-.display-brick span {
-  font-size: 6px;
-  letter-spacing: 0.14em;
-  color: var(--text-muted);
 }
 .display-brick strong {
   font-weight: 600;
@@ -147,30 +131,17 @@
   border-color: #873721;
   transform: rotate(-2deg) translateX(-8px);
 }
-.display-brick-2 span {
-  color: var(--surface-secondary);
-}
 .display-brick-3 {
   transform: translateX(6px);
 }
 .display-brick-4 {
   transform: rotate(2deg) translateX(-6px);
 }
-.art-footnote {
-  display: flex;
-  justify-content: space-between;
-  font-size: 8px;
-  color: var(--text-muted);
-  letter-spacing: 0.14em;
-}
 .reading-screen .difficulty-option {
   padding: 22px 10px;
 }
-.reading-screen .difficulty-option span {
-  display: block;
-  font-size: 11px;
-  line-height: 1.5;
-  margin-top: 10px;
+.difficulty-option span {
+  display: none;
 }
 @media (max-width: 1000px) {
   .menu-screen {
@@ -188,7 +159,7 @@
     gap: 40px;
   }
   .menu-copy h1 {
-    font-size: 80px;
+    font-size: clamp(46px, 10vw, 64px);
   }
   .menu-art {
     min-height: 440px;
